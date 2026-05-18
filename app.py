@@ -8,9 +8,13 @@ import io
 app = Flask(__name__)
 TEMPLATE_PATH = "test_1_0.pdf"
 
-# 1. ReportLab용 한글 폰트 사전 등록 (윈도우 맑은 고딕 기준)
-FONT_PATH = "C:/Windows/Fonts/malgun.ttf"
-pdfmetrics.registerFont(TTFont("Malgun", FONT_PATH))
+# # 1. ReportLab용 한글 폰트 사전 등록 (윈도우 맑은 고딕 기준)
+# FONT_PATH = "C:/Windows/Fonts/malgun.ttf"
+# pdfmetrics.registerFont(TTFont("Malgun", FONT_PATH))
+
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FONT_PATH = os.path.join(BASE_DIR, "malgun.ttf")
 
 @app.route('/')
 @app.route('/apply')
