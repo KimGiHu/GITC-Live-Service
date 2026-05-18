@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>초거대AI 클라우드팜 GPU 가상자원 이용 신청</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; padding: 40px; }
+        .container { max-width: 600px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #333; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #004494; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>GPU 가상자원 이용 신청</h2>
+        <form action="/generate_pdf" method="post">
+            <div class="form-group">
+                <label>기업명</label>
+                <input type="text" name="company name" required>
+            </div>
+            <div class="form-group">
+                <label>대표자 성명</label>
+                <input type="text" name="Representative Name" required>
+            </div>
+            <div class="form-group">
+                <label>주소</label>
+                <input type="text" name="Address" required>
+            </div>
+            <div class="form-group">
+                <label>사업자등록번호</label>
+                <input type="text" name="Business Registration Number" required>
+            </div>
+            <div class="form-group">
+                <label>법인등록번호</label>
+                <input type="text" name="Corporate Registration Number" required>
+            </div>
+            <div class="form-group">
+                <label>업태/업종명</label>
+                <input type="text" name="Business Type/Activity" required>
+            </div>
+            <div class="form-group">
+                <label>기업담당자 성명/직위</label>
+                <input type="text" name="Name / Position">
+                <label>기업담당자 휴대전화</label>
+                <input type="text" name="Mobile">
+                <label>기업담당자 전화번호</label>
+                <input type="text" name="Tel">
+                <label>기업담당자 E-mail</label>
+                <input type="text" name="Mail">
+            </div>
+            <div class="form-group">
+                <label>산업 분야 (다중 선택 가능)</label>
+                <div>
+                    <label><input type="checkbox" name="Traffic" value="0"> 교통</label>
+                    <label><input type="checkbox" name="Life" value="0"> 생활</label>
+                    <label><input type="checkbox" name="Manufacture" value="0"> 제조</label>
+                    <label><input type="checkbox" name="Mobility_future" value="0"> 미래차</label>
+                    <label><input type="checkbox" name="Military" value="0"> 국방</label>
+                    <label><input type="checkbox" name="Environment" value="0"> 환경</label>
+                    <label><input type="checkbox" name="Agriculture" value="0"> 농업</label>
+                    <label><input type="checkbox" name="ETC" value="0"> 기타</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>활용 목적</label>
+                <input type="text" name="Purpose">
+            </div>
+
+            <div class="form-group">
+                <label>서비스 이용기간</label>
+                <div style="display: flex; gap: 5px; align-items: center;">
+                    <input type="text" name="1st year" placeholder="YYYY"> 년
+                    <input type="text" name="1st month" placeholder="MM"> 월
+                    <input type="text" name="1st day" placeholder="DD"> 일 
+                    <input type="text" name="2nd year" placeholder="YYYY"> 년
+                    <input type="text" name="2nd month" placeholder="MM"> 월
+                    <input type="text" name="2nd day" placeholder="DD"> 일
+                </div>
+            </div>
+            <div class="form-group">
+                <!-- <label> 신청 자원 </label> -->
+                <label> H100 1 Unit<input type="text" name="H100 Number" value="0" ></label>
+                <label> GPU 2 Slice<input type="text" name="GPU 2 slice" value="0" ></label>
+                <label> GPU 3 Slice<input type="text" name="GPU 3 slice" value="0" ></label>
+                <label> GPU 4 Slice<input type="text" name="GPU 4 slice" value="0" ></label>
+            </div>
+            <div class="form-group">
+                <label>개인정보 수집 이용 동의여부</label>
+                <div>
+                    <label><input type="checkbox" name="Agree_Collection" value="0"> 동의</label>
+                    <label><input type="checkbox" name="Disgree_Collection" value="0"> 비동의</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>신청일자 및 서명</label>
+                <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 5px;">
+                    <input type="text" name="Register Year" placeholder="YYYY"> 년
+                    <input type="text" name="Register Month" placeholder="MM"> 월
+                    <input type="text" name="Register Day" placeholder="DD"> 일
+                </div>
+                <input type="text" name="Application Business Name" placeholder="신청기업">
+                <input type="text" name="Corporate Representative Name" placeholder="담당자 성명">
+            </div>
+            <button type="submit">신청서 PDF 다운로드</button>
+        </form>
+    </div>
+</body>
+</html>
