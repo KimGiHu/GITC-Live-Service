@@ -15,6 +15,7 @@ TEMPLATE_PATH = "test_1_0.pdf"
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FONT_PATH = os.path.join(BASE_DIR, "malgun.ttf")
+pdfmetrics.registerFont(TTFont("Malgun", FONT_PATH))
 
 @app.route('/')
 @app.route('/apply')
