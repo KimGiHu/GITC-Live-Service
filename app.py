@@ -27,8 +27,6 @@ def apply_form():
     }
     return render_template('index.html', prefill=prefill_data)
 
-
-
 @app.route('/generate_pdf', methods=['POST'])
 def generate_pdf():
     form_data = request.form
@@ -151,7 +149,10 @@ def generate_pdf():
         packet.seek(0)
         
         # ReportLab으로 만든 텍스트 레이어를 원본 PDF 위에 병합 (Overlay)
-        overlay_doc = fitz.open("pdf", packet)
+        # overlay_doc = fitz.open("pdf", packet)
+        
+        # [수정 후] 정상 작동 (명확한 원시 바이트 데이터로 변환하여 던짐)
+        overlay_doc = fitz.open("pdf", packet.getvalue())
         page.show_pdf_page(page.rect, overlay_doc, 0)
 
     # 최종 결과물 반환
