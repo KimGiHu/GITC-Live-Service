@@ -18,7 +18,8 @@
 <body>
     <div class="container">
         <h2>GPU 가상자원 이용 신청</h2>
-        <form action="/generate_pdf" method="post" onsubmit="return validateForm()">
+        <form id="applyForm" action="/generate_pdf" method="post">
+        <!-- <form action="/generate_pdf" method="post" onsubmit="return validateForm()"> -->
             <div class="form-group">
                 <label>기업명 *</label>
                 <input type="text" name="company name" required>
