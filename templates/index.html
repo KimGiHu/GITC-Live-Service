@@ -20,13 +20,12 @@
         .checkbox-group label { display: inline-flex; align-items: center; font-weight: normal; margin: 0; }
         .checkbox-group input { margin-right: 5px; }
 
-        /* [핵심 수정] 1줄 강제 정렬 및 모바일 반응형 그룹 */
         .oneline-group {
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            white-space: nowrap; /* 줄바꿈 절대 금지 */
+            white-space: nowrap; 
             font-size: 14px;
         }
         .oneline-group input {
@@ -34,27 +33,52 @@
             padding: 8px 4px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            min-width: 0; /* 모바일에서 박스가 화면 밖으로 밀리지 않고 축소되도록 허용 */
+            min-width: 0; 
         }
         
-        /* 날짜 입력칸 유연성 부여 */
         .date-y { flex: 1.5; max-width: 65px; margin: 0 2px; }
         .date-md { flex: 1; max-width: 45px; margin: 0 2px; }
         .date-text { margin: 0 2px; }
-        
-        /* GPU 입력칸 유연성 부여 */
-        .gpu-label { display: flex; align-items: center; font-weight: normal; margin: 0; gap: 4px; }
-        .gpu-input { width: 45px; }
 
-        /* 모바일 세로 화면(500px 이하) 진입 시 크기 자동 축소 */
+        /* [수정된 부분] 자원 신청 한 줄 강제 정렬 */
+        .resource-container {
+            display: flex;
+            flex-wrap: nowrap; /* 절대 줄바꿈 금지 */
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 5px;
+            overflow-x: auto; /* 화면이 너무 좁으면 가로 스크롤 허용 */
+            padding-bottom: 5px; /* 스크롤바 여백 */
+        }
+        .resource-item {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            font-weight: normal;
+            font-size: 13px;
+            margin: 0;
+        }
+        .resource-item input {
+            width: 45px;
+            text-align: center;
+            padding: 6px 2px;
+            margin-left: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
         @media (max-width: 500px) {
             .oneline-group { font-size: 11px; justify-content: center; }
             .oneline-group input { padding: 6px 2px; font-size: 11px; }
             .date-y { max-width: 45px; margin: 0 1px; }
             .date-md { max-width: 30px; margin: 0 1px; }
             .date-text { margin: 0 1px; }
-            .gpu-label { gap: 2px; }
-            .gpu-input { width: 30px; }
+            
+            /* 모바일 화면에서 자원 신청 폰트 및 박스 최적화 */
+            .resource-container { gap: 4px; }
+            .resource-item { font-size: 11px; }
+            .resource-item input { width: 35px; padding: 4px 1px; font-size: 11px; }
         }
         
         button { width: 100%; padding: 15px; background-color: #0056b3; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -139,11 +163,11 @@
             
             <div class="form-group">
                 <label>신청 자원 (단위: 개)</label>
-                <div class="oneline-group">
-                    <label class="gpu-label">H100 1 Unit <input type="number" class="gpu-input" name="H100 Number" value="0" min="0"></label>
-                    <label class="gpu-label">GPU 2 Slice <input type="number" class="gpu-input" name="GPU 2 slice" value="0" min="0"></label>
-                    <label class="gpu-label">GPU 3 Slice <input type="number" class="gpu-input" name="GPU 3 slice" value="0" min="0"></label>
-                    <label class="gpu-label">GPU 4 Slice <input type="number" class="gpu-input" name="GPU 4 slice" value="0" min="0"></label>
+                <div class="resource-container">
+                    <label class="resource-item">H100 <input type="number" name="H100 Number" value="0" min="0"></label>
+                    <label class="resource-item">GPU 2 Slice <input type="number" name="GPU 2 slice" value="0" min="0"></label>
+                    <label class="resource-item">GPU 3 Slice <input type="number" name="GPU 3 slice" value="0" min="0"></label>
+                    <label class="resource-item">GPU 4 Slice <input type="number" name="GPU 4 slice" value="0" min="0"></label>
                 </div>
             </div>
             
@@ -162,4 +186,45 @@
                     <input type="number" class="date-md" name="Register Month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
                     <input type="number" class="date-md" name="Register Day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
                 </div>
-                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 8
+                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 8px;">
+                <input type="text" name="Corporate Representative Name" placeholder="담당자 성명">
+            </div>
+            
+            <button type="submit">신청서 PDF 다운로드</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("applyForm").addEventListener("submit", function(event) {
+            const form = event.target;
+            
+            const mobileRegex = /^01[016789]-\d{3,4}-\d{4}$/;
+            const bizRegex = /^\d{3}-\d{2}-\d{5}$/;
+            const corpRegex = /^\d{6}-\d{7}$/;
+
+            const mobile = form.elements["Mobile"].value.trim();
+            const biz = form.elements["Business Registration Number"].value.trim();
+            const corp = form.elements["Corporate Registration Number"].value.trim();
+
+            if (mobile && !mobileRegex.test(mobile)) {
+                alert("오류: 올바른 휴대전화 번호 형식이 아닙니다.\n하이픈(-)을 포함해주세요. (예: 010-1234-5678)");
+                form.elements["Mobile"].focus();
+                event.preventDefault(); 
+                return;
+            }
+            if (biz && !bizRegex.test(biz)) {
+                alert("오류: 올바른 사업자등록번호 형식이 아닙니다.\n(예: 123-45-67890)");
+                form.elements["Business Registration Number"].focus();
+                event.preventDefault(); 
+                return;
+            }
+            if (corp && !corpRegex.test(corp)) {
+                alert("오류: 올바른 법인등록번호 형식이 아닙니다.\n(예: 123456-1234567)");
+                form.elements["Corporate Registration Number"].focus();
+                event.preventDefault(); 
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
