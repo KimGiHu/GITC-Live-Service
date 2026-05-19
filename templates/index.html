@@ -5,29 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>초거대AI 클라우드팜 GPU 가상자원 이용 신청</title>
     <style>
-        /* [핵심 수정 2] 모든 요소의 여백을 너비에 포함시켜 삐져나감 원천 차단 */
         * { box-sizing: border-box; } 
-        
         body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; padding: 15px; margin: 0; }
         .container { width: 100%; max-width: 650px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: auto; }
         h2 { color: #333; text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
         .form-group { margin-bottom: 20px; }
         label { font-weight: bold; display: block; margin-bottom: 8px; color: #555; }
         
-        /* 기본 입력칸 */
         input[type="text"], input[type="email"], input[type="tel"] { 
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;
         }
         
-        /* 체크박스/라디오버튼 반응형 정렬 */
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; }
         .checkbox-group label { display: inline-flex; align-items: center; font-weight: normal; margin: 0; }
         .checkbox-group input { margin-right: 5px; }
 
-        /* 날짜 및 자원 입력 그룹 (모바일에서 깔끔하게 줄바꿈되도록 그룹핑) */
-        .flex-wrap-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .inner-group { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-        .inner-group input[type="number"] { width: 70px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-align: center; }
+        /* [핵심 수정] 1줄 강제 정렬 및 모바일 반응형 그룹 */
+        .oneline-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            white-space: nowrap; /* 줄바꿈 절대 금지 */
+            font-size: 14px;
+        }
+        .oneline-group input {
+            text-align: center;
+            padding: 8px 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 0; /* 모바일에서 박스가 화면 밖으로 밀리지 않고 축소되도록 허용 */
+        }
+        
+        /* 날짜 입력칸 유연성 부여 */
+        .date-y { flex: 1.5; max-width: 65px; margin: 0 2px; }
+        .date-md { flex: 1; max-width: 45px; margin: 0 2px; }
+        .date-text { margin: 0 2px; }
+        
+        /* GPU 입력칸 유연성 부여 */
+        .gpu-label { display: flex; align-items: center; font-weight: normal; margin: 0; gap: 4px; }
+        .gpu-input { width: 45px; }
+
+        /* 모바일 세로 화면(500px 이하) 진입 시 크기 자동 축소 */
+        @media (max-width: 500px) {
+            .oneline-group { font-size: 11px; justify-content: center; }
+            .oneline-group input { padding: 6px 2px; font-size: 11px; }
+            .date-y { max-width: 45px; margin: 0 1px; }
+            .date-md { max-width: 30px; margin: 0 1px; }
+            .date-text { margin: 0 1px; }
+            .gpu-label { gap: 2px; }
+            .gpu-input { width: 30px; }
+        }
         
         button { width: 100%; padding: 15px; background-color: #0056b3; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #004494; }
@@ -98,28 +126,24 @@
 
             <div class="form-group">
                 <label>서비스 이용기간</label>
-                <div class="flex-wrap-group">
-                    <div class="inner-group">
-                        <input type="number" name="1st year" placeholder="YYYY" min="2024"> 년
-                        <input type="number" name="1st month" placeholder="MM" min="1" max="12"> 월
-                        <input type="number" name="1st day" placeholder="DD" min="1" max="31"> 일
-                    </div>
-                    <span>~</span>
-                    <div class="inner-group">
-                        <input type="number" name="2nd year" placeholder="YYYY" min="2024"> 년
-                        <input type="number" name="2nd month" placeholder="MM" min="1" max="12"> 월
-                        <input type="number" name="2nd day" placeholder="DD" min="1" max="31"> 일
-                    </div>
+                <div class="oneline-group">
+                    <input type="number" class="date-y" name="1st year" placeholder="YYYY" min="2024"><span class="date-text">년</span>
+                    <input type="number" class="date-md" name="1st month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
+                    <input type="number" class="date-md" name="1st day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
+                    <span class="date-text" style="margin: 0 4px;">~</span>
+                    <input type="number" class="date-y" name="2nd year" placeholder="YYYY" min="2024"><span class="date-text">년</span>
+                    <input type="number" class="date-md" name="2nd month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
+                    <input type="number" class="date-md" name="2nd day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
                 </div>
             </div>
             
             <div class="form-group">
                 <label>신청 자원 (단위: 개)</label>
-                <div class="flex-wrap-group">
-                    <div class="inner-group"><label style="margin:0;">H100 1 Unit</label> <input type="number" name="H100 Number" value="0" min="0"></div>
-                    <div class="inner-group"><label style="margin:0;">GPU 2 Slice</label> <input type="number" name="GPU 2 slice" value="0" min="0"></div>
-                    <div class="inner-group"><label style="margin:0;">GPU 3 Slice</label> <input type="number" name="GPU 3 slice" value="0" min="0"></div>
-                    <div class="inner-group"><label style="margin:0;">GPU 4 Slice</label> <input type="number" name="GPU 4 slice" value="0" min="0"></div>
+                <div class="oneline-group">
+                    <label class="gpu-label">H100 1 Unit <input type="number" class="gpu-input" name="H100 Number" value="0" min="0"></label>
+                    <label class="gpu-label">GPU 2 Slice <input type="number" class="gpu-input" name="GPU 2 slice" value="0" min="0"></label>
+                    <label class="gpu-label">GPU 3 Slice <input type="number" class="gpu-input" name="GPU 3 slice" value="0" min="0"></label>
+                    <label class="gpu-label">GPU 4 Slice <input type="number" class="gpu-input" name="GPU 4 slice" value="0" min="0"></label>
                 </div>
             </div>
             
@@ -133,16 +157,9 @@
             
             <div class="form-group">
                 <label>신청일자 및 서명</label>
-                <div class="flex-wrap-group" style="margin-bottom: 10px;">
-                    <div class="inner-group">
-                        <input type="number" name="Register Year" placeholder="YYYY" min="2024"> 년
-                        <input type="number" name="Register Month" placeholder="MM" min="1" max="12"> 월
-                        <input type="number" name="Register Day" placeholder="DD" min="1" max="31"> 일
-                    </div>
+                <div class="oneline-group" style="margin-bottom: 10px; justify-content: flex-start;">
+                    <input type="number" class="date-y" name="Register Year" placeholder="YYYY" min="2024"><span class="date-text">년</span>
+                    <input type="number" class="date-md" name="Register Month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
+                    <input type="number" class="date-md" name="Register Day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
                 </div>
-                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 8px;">
-                <input type="text" name="Corporate Representative Name" placeholder="담당자 성명">
-            </div>
-            
-            <button type="submit">신청서 PDF 다운로드</button>
-        </
+                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 8
