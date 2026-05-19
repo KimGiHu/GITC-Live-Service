@@ -9,21 +9,22 @@
         h2 { color: #333; text-align: center; margin-bottom: 30px; }
         .form-group { margin-bottom: 15px; }
         label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 20px; }
         button:hover { background-color: #004494; }
+        .inline-inputs input { width: auto; flex: 1; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>GPU 가상자원 이용 신청</h2>
-        <form action="/generate_pdf" method="post">
+        <form action="/generate_pdf" method="post" onsubmit="return validateForm()">
             <div class="form-group">
-                <label>기업명</label>
+                <label>기업명 *</label>
                 <input type="text" name="company name" required>
             </div>
             <div class="form-group">
-                <label>대표자 성명</label>
+                <label>대표자 성명 *</label>
                 <input type="text" name="Representative Name" required>
             </div>
             <div class="form-group">
@@ -32,11 +33,11 @@
             </div>
             <div class="form-group">
                 <label>사업자등록번호</label>
-                <input type="text" name="Business Registration Number" required>
+                <input type="text" name="Business Registration Number" placeholder="000-00-00000" required>
             </div>
             <div class="form-group">
                 <label>법인등록번호</label>
-                <input type="text" name="Corporate Registration Number" required>
+                <input type="text" name="Corporate Registration Number" placeholder="000000-0000000" required>
             </div>
             <div class="form-group">
                 <label>업태/업종명</label>
@@ -46,23 +47,23 @@
                 <label>기업담당자 성명/직위</label>
                 <input type="text" name="Name / Position">
                 <label>기업담당자 휴대전화</label>
-                <input type="text" name="Mobile">
+                <input type="tel" name="Mobile" placeholder="010-0000-0000">
                 <label>기업담당자 전화번호</label>
-                <input type="text" name="Tel">
+                <input type="tel" name="Tel">
                 <label>기업담당자 E-mail</label>
-                <input type="text" name="Mail">
+                <input type="email" name="Mail" placeholder="user@example.com">
             </div>
             <div class="form-group">
                 <label>산업 분야 (다중 선택 가능)</label>
                 <div>
-                    <label><input type="checkbox" name="Traffic" value="0"> 교통</label>
-                    <label><input type="checkbox" name="Life" value="0"> 생활</label>
-                    <label><input type="checkbox" name="Manufacture" value="0"> 제조</label>
-                    <label><input type="checkbox" name="Mobility_future" value="0"> 미래차</label>
-                    <label><input type="checkbox" name="Military" value="0"> 국방</label>
-                    <label><input type="checkbox" name="Environment" value="0"> 환경</label>
-                    <label><input type="checkbox" name="Agriculture" value="0"> 농업</label>
-                    <label><input type="checkbox" name="ETC" value="0"> 기타</label>
+                    <label style="display:inline;"><input type="checkbox" name="Traffic" value="0"> 교통</label>
+                    <label style="display:inline;"><input type="checkbox" name="Life" value="0"> 생활</label>
+                    <label style="display:inline;"><input type="checkbox" name="Manufacture" value="0"> 제조</label>
+                    <label style="display:inline;"><input type="checkbox" name="Mobility_future" value="0"> 미래차</label>
+                    <label style="display:inline;"><input type="checkbox" name="Military" value="0"> 국방</label>
+                    <label style="display:inline;"><input type="checkbox" name="Environment" value="0"> 환경</label>
+                    <label style="display:inline;"><input type="checkbox" name="Agriculture" value="0"> 농업</label>
+                    <label style="display:inline;"><input type="checkbox" name="ETC" value="0"> 기타</label>
                 </div>
             </div>
             <div class="form-group">
@@ -72,35 +73,35 @@
 
             <div class="form-group">
                 <label>서비스 이용기간</label>
-                <div style="display: flex; gap: 5px; align-items: center;">
-                    <input type="text" name="1st year" placeholder="YYYY"> 년
-                    <input type="text" name="1st month" placeholder="MM"> 월
-                    <input type="text" name="1st day" placeholder="DD"> 일 
-                    <input type="text" name="2nd year" placeholder="YYYY"> 년
-                    <input type="text" name="2nd month" placeholder="MM"> 월
-                    <input type="text" name="2nd day" placeholder="DD"> 일
+                <div class="inline-inputs" style="display: flex; gap: 5px; align-items: center;">
+                    <input type="number" name="1st year" placeholder="YYYY" min="2024"> 년
+                    <input type="number" name="1st month" placeholder="MM" min="1" max="12"> 월
+                    <input type="number" name="1st day" placeholder="DD" min="1" max="31"> 일 ~
+                    <input type="number" name="2nd year" placeholder="YYYY" min="2024"> 년
+                    <input type="number" name="2nd month" placeholder="MM" min="1" max="12"> 월
+                    <input type="number" name="2nd day" placeholder="DD" min="1" max="31"> 일
                 </div>
             </div>
             <div class="form-group">
-                <!-- <label> 신청 자원 </label> -->
-                <label> H100 1 Unit<input type="text" name="H100 Number" value="0" ></label>
-                <label> GPU 2 Slice<input type="text" name="GPU 2 slice" value="0" ></label>
-                <label> GPU 3 Slice<input type="text" name="GPU 3 slice" value="0" ></label>
-                <label> GPU 4 Slice<input type="text" name="GPU 4 slice" value="0" ></label>
+                <label> 신청 자원 (단위: 개) </label>
+                <label style="display:inline; margin-right: 10px;"> H100 1 Unit <input type="number" style="width: 50px;" name="H100 Number" value="0" min="0"></label>
+                <label style="display:inline; margin-right: 10px;"> GPU 2 Slice <input type="number" style="width: 50px;" name="GPU 2 slice" value="0" min="0"></label>
+                <label style="display:inline; margin-right: 10px;"> GPU 3 Slice <input type="number" style="width: 50px;" name="GPU 3 slice" value="0" min="0"></label>
+                <label style="display:inline;"> GPU 4 Slice <input type="number" style="width: 50px;" name="GPU 4 slice" value="0" min="0"></label>
             </div>
             <div class="form-group">
-                <label>개인정보 수집 이용 동의여부</label>
+                <label>개인정보 수집 이용 동의여부 *</label>
                 <div>
-                    <label><input type="checkbox" name="Agree_Collection" value="0"> 동의</label>
-                    <label><input type="checkbox" name="Disgree_Collection" value="0"> 비동의</label>
+                    <label style="display:inline;"><input type="radio" name="Collection_Agreement" value="Agree" required> 동의</label>
+                    <label style="display:inline;"><input type="radio" name="Collection_Agreement" value="Disagree"> 비동의</label>
                 </div>
             </div>
             <div class="form-group">
                 <label>신청일자 및 서명</label>
-                <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 5px;">
-                    <input type="text" name="Register Year" placeholder="YYYY"> 년
-                    <input type="text" name="Register Month" placeholder="MM"> 월
-                    <input type="text" name="Register Day" placeholder="DD"> 일
+                <div class="inline-inputs" style="display: flex; gap: 5px; align-items: center; margin-bottom: 5px;">
+                    <input type="number" name="Register Year" placeholder="YYYY" min="2024"> 년
+                    <input type="number" name="Register Month" placeholder="MM" min="1" max="12"> 월
+                    <input type="number" name="Register Day" placeholder="DD" min="1" max="31"> 일
                 </div>
                 <input type="text" name="Application Business Name" placeholder="신청기업">
                 <input type="text" name="Corporate Representative Name" placeholder="담당자 성명">
@@ -108,5 +109,40 @@
             <button type="submit">신청서 PDF 다운로드</button>
         </form>
     </div>
+
+    <script>
+        function validateForm() {
+            const form = document.forms[0];
+            
+            // 1. 정규표현식 정의
+            const mobileRegex = /^01[016789]-\d{3,4}-\d{4}$/;
+            const bizRegex = /^\d{3}-\d{2}-\d{5}$/;
+            const corpRegex = /^\d{6}-\d{7}$/;
+
+            // 2. 입력값 가져오기
+            const mobile = form["Mobile"].value.trim();
+            const biz = form["Business Registration Number"].value.trim();
+            const corp = form["Corporate Registration Number"].value.trim();
+
+            // 3. 검사 및 경고창 띄우기 (실패 시 return false로 전송 차단 -> 데이터 유지)
+            if (mobile && !mobileRegex.test(mobile)) {
+                alert("오류: 올바른 휴대전화 번호 형식이 아닙니다.\n하이픈(-)을 포함해주세요. (예: 010-1234-5678)");
+                form["Mobile"].focus();
+                return false;
+            }
+            if (biz && !bizRegex.test(biz)) {
+                alert("오류: 올바른 사업자등록번호 형식이 아닙니다.\n(예: 123-45-67890)");
+                form["Business Registration Number"].focus();
+                return false;
+            }
+            if (corp && !corpRegex.test(corp)) {
+                alert("오류: 올바른 법인등록번호 형식이 아닙니다.\n(예: 123456-1234567)");
+                form["Corporate Registration Number"].focus();
+                return false;
+            }
+            
+            return true; // 모든 검사를 통과하면 서버로 전송
+        }
+    </script>
 </body>
 </html>
