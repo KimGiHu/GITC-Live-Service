@@ -2,28 +2,34 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>초거대AI 클라우드팜 GPU 가상자원 이용 신청</title>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .container { max-width: 650px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: auto; }
-        h2 { color: #333; text-align: center; margin-bottom: 30px; }
+        /* [핵심 수정 2] 모든 요소의 여백을 너비에 포함시켜 삐져나감 원천 차단 */
+        * { box-sizing: border-box; } 
+        
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; padding: 15px; margin: 0; }
+        .container { width: 100%; max-width: 650px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #333; text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
         .form-group { margin-bottom: 20px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
-        input[type="text"], input[type="email"], input[type="tel"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        label { font-weight: bold; display: block; margin-bottom: 8px; color: #555; }
         
-        /* 인라인 정렬 및 반응형 줄바꿈 설정 */
-        .inline-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .inline-group input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        /* 기본 입력칸 */
+        input[type="text"], input[type="email"], input[type="tel"] { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;
+        }
         
-        /* 숫자 입력칸 너비 고정 */
-        .input-year { width: 75px; }
-        .input-md { width: 55px; }
-        .input-gpu { width: 60px; }
+        /* 체크박스/라디오버튼 반응형 정렬 */
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; }
+        .checkbox-group label { display: inline-flex; align-items: center; font-weight: normal; margin: 0; }
+        .checkbox-group input { margin-right: 5px; }
 
-        /* 체크박스/라디오 버튼 라벨 인라인 설정 */
-        .checkbox-group label { display: inline-block; margin-right: 15px; margin-bottom: 5px; font-weight: normal; }
+        /* 날짜 및 자원 입력 그룹 (모바일에서 깔끔하게 줄바꿈되도록 그룹핑) */
+        .flex-wrap-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .inner-group { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        .inner-group input[type="number"] { width: 70px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-align: center; }
         
-        button { width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 20px; }
+        button { width: 100%; padding: 15px; background-color: #0056b3; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #004494; }
     </style>
 </head>
@@ -92,24 +98,28 @@
 
             <div class="form-group">
                 <label>서비스 이용기간</label>
-                <div class="inline-group">
-                    <input type="number" class="input-year" name="1st year" placeholder="YYYY" min="2024"> 년
-                    <input type="number" class="input-md" name="1st month" placeholder="MM" min="1" max="12"> 월
-                    <input type="number" class="input-md" name="1st day" placeholder="DD" min="1" max="31"> 일
+                <div class="flex-wrap-group">
+                    <div class="inner-group">
+                        <input type="number" name="1st year" placeholder="YYYY" min="2024"> 년
+                        <input type="number" name="1st month" placeholder="MM" min="1" max="12"> 월
+                        <input type="number" name="1st day" placeholder="DD" min="1" max="31"> 일
+                    </div>
                     <span>~</span>
-                    <input type="number" class="input-year" name="2nd year" placeholder="YYYY" min="2024"> 년
-                    <input type="number" class="input-md" name="2nd month" placeholder="MM" min="1" max="12"> 월
-                    <input type="number" class="input-md" name="2nd day" placeholder="DD" min="1" max="31"> 일
+                    <div class="inner-group">
+                        <input type="number" name="2nd year" placeholder="YYYY" min="2024"> 년
+                        <input type="number" name="2nd month" placeholder="MM" min="1" max="12"> 월
+                        <input type="number" name="2nd day" placeholder="DD" min="1" max="31"> 일
+                    </div>
                 </div>
             </div>
             
             <div class="form-group">
                 <label>신청 자원 (단위: 개)</label>
-                <div class="inline-group">
-                    <label>H100 1 Unit <input type="number" class="input-gpu" name="H100 Number" value="0" min="0"></label>
-                    <label>GPU 2 Slice <input type="number" class="input-gpu" name="GPU 2 slice" value="0" min="0"></label>
-                    <label>GPU 3 Slice <input type="number" class="input-gpu" name="GPU 3 slice" value="0" min="0"></label>
-                    <label>GPU 4 Slice <input type="number" class="input-gpu" name="GPU 4 slice" value="0" min="0"></label>
+                <div class="flex-wrap-group">
+                    <div class="inner-group"><label style="margin:0;">H100 1 Unit</label> <input type="number" name="H100 Number" value="0" min="0"></div>
+                    <div class="inner-group"><label style="margin:0;">GPU 2 Slice</label> <input type="number" name="GPU 2 slice" value="0" min="0"></div>
+                    <div class="inner-group"><label style="margin:0;">GPU 3 Slice</label> <input type="number" name="GPU 3 slice" value="0" min="0"></div>
+                    <div class="inner-group"><label style="margin:0;">GPU 4 Slice</label> <input type="number" name="GPU 4 slice" value="0" min="0"></div>
                 </div>
             </div>
             
@@ -123,50 +133,16 @@
             
             <div class="form-group">
                 <label>신청일자 및 서명</label>
-                <div class="inline-group" style="margin-bottom: 10px;">
-                    <input type="number" class="input-year" name="Register Year" placeholder="YYYY" min="2024"> 년
-                    <input type="number" class="input-md" name="Register Month" placeholder="MM" min="1" max="12"> 월
-                    <input type="number" class="input-md" name="Register Day" placeholder="DD" min="1" max="31"> 일
+                <div class="flex-wrap-group" style="margin-bottom: 10px;">
+                    <div class="inner-group">
+                        <input type="number" name="Register Year" placeholder="YYYY" min="2024"> 년
+                        <input type="number" name="Register Month" placeholder="MM" min="1" max="12"> 월
+                        <input type="number" name="Register Day" placeholder="DD" min="1" max="31"> 일
+                    </div>
                 </div>
-                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 5px;">
+                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 8px;">
                 <input type="text" name="Corporate Representative Name" placeholder="담당자 성명">
             </div>
             
             <button type="submit">신청서 PDF 다운로드</button>
-        </form>
-    </div>
-
-    <script>
-        document.getElementById("applyForm").addEventListener("submit", function(event) {
-            const form = event.target;
-            
-            const mobileRegex = /^01[016789]-\d{3,4}-\d{4}$/;
-            const bizRegex = /^\d{3}-\d{2}-\d{5}$/;
-            const corpRegex = /^\d{6}-\d{7}$/;
-
-            const mobile = form.elements["Mobile"].value.trim();
-            const biz = form.elements["Business Registration Number"].value.trim();
-            const corp = form.elements["Corporate Registration Number"].value.trim();
-
-            if (mobile && !mobileRegex.test(mobile)) {
-                alert("오류: 올바른 휴대전화 번호 형식이 아닙니다.\n하이픈(-)을 포함해주세요. (예: 010-1234-5678)");
-                form.elements["Mobile"].focus();
-                event.preventDefault(); 
-                return;
-            }
-            if (biz && !bizRegex.test(biz)) {
-                alert("오류: 올바른 사업자등록번호 형식이 아닙니다.\n(예: 123-45-67890)");
-                form.elements["Business Registration Number"].focus();
-                event.preventDefault(); 
-                return;
-            }
-            if (corp && !corpRegex.test(corp)) {
-                alert("오류: 올바른 법인등록번호 형식이 아닙니다.\n(예: 123456-1234567)");
-                form.elements["Corporate Registration Number"].focus();
-                event.preventDefault(); 
-                return;
-            }
-        });
-    </script>
-</body>
-</html>
+        </
