@@ -112,8 +112,8 @@
     </div>
 
     <script>
-        function validateForm() {
-            const form = document.forms[0];
+        document.getElementById("applyForm").addEventListener("submit", function(event) {
+            const form = event.target;
             
             // 1. 정규표현식 정의
             const mobileRegex = /^01[016789]-\d{3,4}-\d{4}$/;
@@ -121,29 +121,30 @@
             const corpRegex = /^\d{6}-\d{7}$/;
 
             // 2. 입력값 가져오기
-            const mobile = form["Mobile"].value.trim();
-            const biz = form["Business Registration Number"].value.trim();
-            const corp = form["Corporate Registration Number"].value.trim();
+            const mobile = form.elements["Mobile"].value.trim();
+            const biz = form.elements["Business Registration Number"].value.trim();
+            const corp = form.elements["Corporate Registration Number"].value.trim();
 
-            // 3. 검사 및 경고창 띄우기 (실패 시 return false로 전송 차단 -> 데이터 유지)
+            // 3. 검사 및 전송 차단 (preventDefault)
             if (mobile && !mobileRegex.test(mobile)) {
                 alert("오류: 올바른 휴대전화 번호 형식이 아닙니다.\n하이픈(-)을 포함해주세요. (예: 010-1234-5678)");
-                form["Mobile"].focus();
-                return false;
+                form.elements["Mobile"].focus();
+                event.preventDefault(); // 폼 전송 물리적 차단
+                return;
             }
             if (biz && !bizRegex.test(biz)) {
                 alert("오류: 올바른 사업자등록번호 형식이 아닙니다.\n(예: 123-45-67890)");
-                form["Business Registration Number"].focus();
-                return false;
+                form.elements["Business Registration Number"].focus();
+                event.preventDefault(); 
+                return;
             }
             if (corp && !corpRegex.test(corp)) {
                 alert("오류: 올바른 법인등록번호 형식이 아닙니다.\n(예: 123456-1234567)");
-                form["Corporate Registration Number"].focus();
-                return false;
+                form.elements["Corporate Registration Number"].focus();
+                event.preventDefault(); 
+                return;
             }
-            
-            return true; // 모든 검사를 통과하면 서버로 전송
-        }
+        });
     </script>
 </body>
 </html>
