@@ -61,12 +61,17 @@ def generate_pdf():
     agreement = form_data.get('Collection_Agreement')
     agree_val = 'V' if agreement == 'Agree' else ''
     disagree_val = 'V' if agreement == 'Disagree' else ''
-
+    
+    # [추가된 로직] 기본 주소와 상세 주소를 한 문장으로 병합
+    base_address = form_data.get('Address', '').strip()
+    detailed_address = form_data.get('Detailed Address', '').strip()
+    full_address = f"{base_address} {detailed_address}".strip()
+    
     # 딕셔너리 구성 (검증된 데이터 및 기본값 0 반영)
     pdf_data = {
         "company name": company_name,
         "Representative Name": rep_name,
-        "Address": form_data.get('Address', ''),
+        "Address": full_address, # [수정된 부분] 합쳐진 주소를 PDF 폼에 전달
         "Business Registration Number": biz_reg_num,
         "Corporate Registration Number": corp_reg_num,
         "Business Type/Activity": form_data.get('Business Type/Activity', ''),
