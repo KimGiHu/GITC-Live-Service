@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>초거대AI 클라우드팜 GPU 가상자원 이용 신청</title>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        * { box-sizing: border-box; } 
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; padding: 15px; margin: 0; }
+        .container { width: 100%; max-width: 650px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #333; text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
+        .form-group { margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 8px; color: #555; }
+        
+        input[type="text"], input[type="email"], input[type="tel"] { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;
+        }
+
+        /* [추가] 검색 버튼과 입력칸을 나란히 배치하기 위한 CSS */
+        .input-with-btn { display: flex; gap: 5px; }
+        .input-with-btn input { flex: 1; }
+        .input-with-btn button { 
+            width: 100px; padding: 10px; margin: 0; 
+            background-color: #6c757d; font-size: 14px; 
+        }
+        .input-with-btn button:hover { background-color: #5a6268; }
+        
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; }
+        .checkbox-group label { display: inline-flex; align-items: center; font-weight: normal; margin: 0; }
+        .checkbox-group input { margin-right: 5px; }
+
+        .oneline-group {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; white-space: nowrap; font-size: 14px;
+        }
+        .oneline-group input {
+            text-align: center; padding: 8px 4px; border: 1px solid #ccc; border-radius: 4px; min-width: 0; 
+        }
+        
+        .date-y { flex: 1.5; max-width: 65px; margin: 0 2px; }
+        .date-md { flex: 1; max-width: 45px; margin: 0 2px; }
+        .date-text { margin: 0 2px; }
+
+        .resource-container {
+            display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between;
+            width: 100%; gap: 5px; overflow-x: auto; padding-bottom: 5px; 
+        }
+        .resource-item {
+            display: flex; align-items: center; white-space: nowrap; font-weight: normal; font-size: 13px; margin: 0;
+        }
+        .resource-item input {
+            width: 45px; text-align: center; padding: 6px 2px; margin-left: 4px; border: 1px solid #ccc; border-radius: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .oneline-group { font-size: 11px; justify-content: center; }
+            .oneline-group input { padding: 6px 2px; font-size: 11px; }
+            .date-y { max-width: 45px; margin: 0 1px; }
+            .date-md { max-width: 30px; margin: 0 1px; }
+            .date-text { margin: 0 1px; }
+            .resource-container { gap: 4px; }
+            .resource-item { font-size: 11px; }
+            .resource-item input { width: 35px; padding: 4px 1px; font-size: 11px; }
+        }
+        
+        button { width: 100%; padding: 15px; background-color: #0056b3; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #004494; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>GPU 가상자원 이용 신청</h2>
+        <form id="applyForm" action="/generate_pdf" method="post">
+            <div class="form-group">
+                <label>기업명 *</label>
+                <input type="text" name="company name" required>
+            </div>
+            <div class="form-group">
+                <label>대표자 성명 *</label>
+                <input type="text" name="Representative Name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>주소</label>
+                <div class="input-with-btn">
+                    <input type="text" id="Address" name="Address" placeholder="우측 버튼을 눌러 검색하세요" readonly required>
+                    <button type="button" onclick="execDaumPostcode()">주소 검색</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>사업자등록번호</label>
+                <div class="input-with-btn">
+                    <input type="text" id="bizNumInput" name="Business Registration Number" placeholder="000-00-00000" required>
+                    <button type="button" onclick="checkBizNumber()">상태 조회</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>법인등록번호</label>
+                <input type="text" name="Corporate Registration Number" placeholder="000000-0000000" required>
+            </div>
+            <div class="form-group">
+                <label>업태/업종명</label>
+                <input type="text" name="Business Type/Activity" required>
+            </div>
+            <div class="form-group">
+                <label>기업담당자 성명/직위</label>
+                <input type="text" name="Name / Position">
+            </div>
+            <div class="form-group">
+                <label>기업담당자 휴대전화</label>
+                <input type="tel" name="Mobile" placeholder="010-0000-0000">
+            </div>
+            <div class="form-group">
+                <label>기업담당자 전화번호</label>
+                <input type="tel" name="Tel">
+            </div>
+            <div class="form-group">
+                <label>기업담당자 E-mail</label>
+                <input type="email" name="Mail" placeholder="user@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label>산업 분야 (다중 선택 가능)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="Traffic" value="0"> 교통</label>
+                    <label><input type="checkbox" name="Life" value="0"> 생활</label>
+                    <label><input type="checkbox" name="Manufacture" value="0"> 제조</label>
+                    <label><input type="checkbox" name="Mobility_future" value="0"> 미래차</label>
+                    <label><input type="checkbox" name="Military" value="0"> 국방</label>
+                    <label><input type="checkbox" name="Environment" value="0"> 환경</label>
+                    <label><input type="checkbox" name="Agriculture" value="0"> 농업</label>
+                    <label><input type="checkbox" name="ETC" value="0"> 기타</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>활용 목적</label>
+                <input type="text" name="Purpose">
+            </div>
+
+            <div class="form-group">
+                <label>서비스 이용기간</label>
+                <div class="oneline-group">
+                    <input type="number" class="date-y" name="1st year" placeholder="YYYY" min="2024"><span class="date-text">년</span>
+                    <input type="number" class="date-md" name="1st month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
+                    <input type="number" class="date-md" name="1st day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
+                    <span class="date-text" style="margin: 0 4px;">~</span>
+                    <input type="number" class="date-y" name="2nd year" placeholder="YYYY" min="2024"><span class="date-text">년</span>
+                    <input type="number" class="date-md" name="2nd month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
+                    <input type="number" class="date-md" name="2nd day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>신청 자원 (단위: 개)</label>
+                <div class="resource-container">
+                    <label class="resource-item">H100 <input type="number" name="H100 Number" value="0" min="0"></label>
+                    <label class="resource-item">GPU 2 Slice <input type="number" name="GPU 2 slice" value="0" min="0"></label>
+                    <label class="resource-item">GPU 3 Slice <input type="number" name="GPU 3 slice" value="0" min="0"></label>
+                    <label class="resource-item">GPU 4 Slice <input type="number" name="GPU 4 slice" value="0" min="0"></label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>개인정보 수집 이용 동의여부 *</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="Collection_Agreement" value="Agree" required> 동의</label>
+                    <label><input type="radio" name="Collection_Agreement" value="Disagree"> 비동의</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>신청일자 및 서명</label>
+                <div class="oneline-group" style="margin-bottom: 10px; justify-content: flex-start;">
+                    <input type="number" class="date-y" name="Register Year" placeholder="YYYY" min="2024"><span class="date-text">년</span>
+                    <input type="number" class="date-md" name="Register Month" placeholder="MM" min="1" max="12"><span class="date-text">월</span>
+                    <input type="number" class="date-md" name="Register Day" placeholder="DD" min="1" max="31"><span class="date-text">일</span>
+                </div>
+                <input type="text" name="Application Business Name" placeholder="신청기업" style="margin-bottom: 8px;">
+                <input type="text" name="Corporate Representative Name" placeholder="담당자 성명">
+            </div>
+            
+            <button type="submit">신청서 PDF 다운로드</button>
+        </form>
+    </div>
+
+    <script>
+        // 1. 카카오(다음) 도로명 주소 API 함수
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 도로명 주소를 해당 입력칸에 매핑
+                    document.getElementById('Address').value = data.roadAddress;
+                }
+            }).open();
+        }
+
+        // 2. 공공데이터포털 사업자등록번호 진위확인 API 함수
+        function checkBizNumber() {
+            const bizInput = document.getElementById("bizNumInput").value.trim();
+            // 하이픈 제거하여 10자리 숫자만 추출
+            const cleanBizNum = bizInput.replace(/-/g, ''); 
+
+            if (cleanBizNum.length !== 10 || isNaN(cleanBizNum)) {
+                alert("하이픈(-)을 포함하거나 제외한 10자리 사업자등록번호를 정확히 입력해주세요.");
+                return;
+            }
+
+            // [주의] 본인의 공공데이터포털 API Key(Encoding 버전)를 발급받아 아래 변수에 입력해야 정상 작동합니다.
+            const serviceKey = "여기에_공공데이터포털에서_발급받은_일반인증키(Encoding)_를_넣으세요"; 
+            const url = `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${serviceKey}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ "b_no": [cleanBizNum] })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data && data.data.length > 0) {
+                    const status = data.data[0].b_stt_cd; // 01: 계속사업자, 02: 휴업, 03: 폐업
+                    const statusMsg = data.data[0].b_stt;
+
+                    if (status === "01") {
+                        alert("정상적인 계속사업자입니다.");
+                    } else if (status === "02" || status === "03") {
+                        alert(`유효하지 않은 사업자입니다. 상태: ${statusMsg}`);
+                        document.getElementById("bizNumInput").value = ""; // 초기화
+                    } else {
+                        alert("국세청에 등록되지 않은 사업자등록번호입니다.");
+                        document.getElementById("bizNumInput").value = "";
+                    }
+                } else {
+                    alert("API 응답 오류 또는 등록되지 않은 번호입니다.");
+                }
+            })
+            .catch(error => {
+                console.error("API Error:", error);
+                alert("국세청 서버 통신 중 오류가 발생했습니다. (API Key가 유효한지 확인하세요.)");
+            });
+        }
+
+        // 3. 기존 전송 전 데이터 유효성 검사
+        document.getElementById("applyForm").addEventListener("submit", function(event) {
+            const form = event.target;
+            
+            const mobileRegex = /^01[016789]-\d{3,4}-\d{4}$/;
+            const bizRegex = /^\d{3}-\d{2}-\d{5}$/;
+            const corpRegex = /^\d{6}-\d{7}$/;
+
+            const mobile = form.elements["Mobile"].value.trim();
+            const biz = form.elements["Business Registration Number"].value.trim();
+            const corp = form.elements["Corporate Registration Number"].value.trim();
+
+            if (mobile && !mobileRegex.test(mobile)) {
+                alert("오류: 올바른 휴대전화 번호 형식이 아닙니다.\n하이픈(-)을 포함해주세요. (예: 010-1234-5678)");
+                form.elements["Mobile"].focus();
+                event.preventDefault(); 
+                return;
+            }
+            if (biz && !bizRegex.test(biz)) {
+                alert("오류: 올바른 사업자등록번호 형식이 아닙니다.\n(예: 123-45-67890)");
+                form.elements["Business Registration Number"].focus();
+                event.preventDefault(); 
+                return;
+            }
+            if (corp && !corpRegex.test(corp)) {
+                alert("오류: 올바른 법인등록번호 형식이 아닙니다.\n(예: 123456-1234567)");
+                form.elements["Corporate Registration Number"].focus();
+                event.preventDefault(); 
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
