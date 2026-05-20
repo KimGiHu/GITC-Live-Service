@@ -83,10 +83,11 @@
             
             <div class="form-group">
                 <label>주소</label>
-                <div class="input-with-btn">
+                <div class="input-with-btn" style="margin-bottom: 8px;">
                     <input type="text" id="Address" name="Address" placeholder="우측 버튼을 눌러 검색하세요" readonly required>
                     <button type="button" onclick="execDaumPostcode()">주소 검색</button>
                 </div>
+                <input type="text" id="DetailedAddress" name="Detailed Address" placeholder="상세 주소를 입력해주세요 (예: 1동 101호)" required>
             </div>
             
             <div class="form-group">
@@ -191,8 +192,10 @@
         function execDaumPostcode() {
             new daum.Postcode({
                 oncomplete: function(data) {
-                    // 도로명 주소를 해당 입력칸에 매핑
+                    // 기본 도로명 주소를 첫 번째 칸에 매핑
                     document.getElementById('Address').value = data.roadAddress;
+                    // [UX 디테일] 매핑 후 즉시 상세 주소 칸으로 커서(포커스) 자동 이동
+                    document.getElementById('DetailedAddress').focus();
                 }
             }).open();
         }
